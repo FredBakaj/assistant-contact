@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <RootNamespace>AssistantContract.TgBot</RootNamespace>
+    <AssemblyName>AssistantContract.TgBot</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="Telegram.Bot" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Core\Config\**" />
+    <Compile Remove="Core\Handler\NotificationHandler\Handler\SmallTalkChat\TestPriorityHandler.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Core\Config\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Core\Config\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Core\Config\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+
+
+
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Core\Handler\NotificationHandler\Notification\Implementation\" />
+    <Folder Include="Core\Src\Middleware\Implementation\Group\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Указываем файлы для копирования -->
+    <None Update="ffmpeg\**\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+
+
+
+</Project>
