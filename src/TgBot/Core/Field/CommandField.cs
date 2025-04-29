@@ -6,5 +6,6 @@
         public const string Reload = "reload";
         public const string AddContact = "addContact";
         public const string GetRecommendation = "getRecommendation";
+        public const string GetAllContacts = "getAllContacts";
     }
 }
