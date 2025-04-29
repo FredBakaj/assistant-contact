@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.AI.OpenAI" />
     <PackageReference Include="DiffMatchPatch" />
+    <PackageReference Include="HtmlAgilityPack" />
     <PackageReference Include="LanguageDetection.NETStandard" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />

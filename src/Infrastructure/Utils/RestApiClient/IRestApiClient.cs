@@ -2,6 +2,10 @@
 
 public interface IRestApiClient
 {
-    public Task<TOut> PostAsync<TOut>(string apiUrl, Dictionary<string, string> headers, object body);
+    Task<TOut> PostAsync<TOut>(string apiUrl, Dictionary<string, string> headers, object body);
 
+    Task<TOut> GetAsync<TOut>(string apiUrl, Dictionary<string, string> headers,
+        Dictionary<string, string> queryParams);
+
+    Task<TOut> GetAsync<TOut>(string apiUrl, Dictionary<string, string> headers);
 }

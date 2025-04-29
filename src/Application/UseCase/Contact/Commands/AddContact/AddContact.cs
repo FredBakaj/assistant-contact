@@ -1,4 +1,6 @@
 ﻿using AssistantContract.Application.Common.Interfaces;
+using AssistantContract.Application.Manager.Ai;
+using AssistantContract.Application.UseCase.Contact.Queries.GetRecommendation;
 using AssistantContract.Domain.Entities;
 using Microsoft.VisualBasic;
 
@@ -22,10 +24,12 @@ public class AddContactCommandValidator : AbstractValidator<AddContactCommand>
 public class AddContactCommandHandler : IRequestHandler<AddContactCommand>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IAiManager _aiManager;
 
-    public AddContactCommandHandler(IApplicationDbContext context)
+    public AddContactCommandHandler(IApplicationDbContext context, IAiManager aiManager)
     {
         _context = context;
+        _aiManager = aiManager;
     }
 
     public async Task Handle(AddContactCommand request, CancellationToken cancellationToken)
@@ -34,6 +38,10 @@ public class AddContactCommandHandler : IRequestHandler<AddContactCommand>
             await _context.Contact.CountAsync(x => x.UserId == request.UserId, cancellationToken: cancellationToken);
         if (countContact <= 25)
         {
+            var keywords =
+                await _aiManager.QueryToLlmModelAsync(string.Format(GetRecommendationPromptField.PromptDetectKeywords,
+                    request.Description));
+            
             var maxNumberContact = countContact > 0
                 ? await _context.Contact.Where(x => x.UserId == request.UserId)
                     .MaxAsync(x => x.ContactNumber, cancellationToken: cancellationToken)
@@ -46,7 +54,8 @@ public class AddContactCommandHandler : IRequestHandler<AddContactCommand>
                     ContactNumber = maxNumberContact + 1,
                     Name = request.Name,
                     Phone = request.Phone,
-                    Description = request.Description
+                    Description = request.Description,
+                    KeywordDescription = keywords
                 }, cancellationToken);
 
             await _context.SaveChangesAsync(cancellationToken);

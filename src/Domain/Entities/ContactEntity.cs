@@ -7,6 +7,8 @@ public class ContactEntity : BaseAuditableEntity<int>
     public string? Phone { get; set; }
     public string Description { get; set; } = null!;
 
+    public string KeywordDescription { get; set; } = null!;
+
     public long UserId { get; set; }
     public UserEntity User { get; set; } = null!;
 
