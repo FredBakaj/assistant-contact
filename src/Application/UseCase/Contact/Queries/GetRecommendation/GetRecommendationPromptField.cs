@@ -15,11 +15,8 @@ public abstract class GetRecommendationPromptField
                                                """;
 
     public const string PromptGenerateRecommendation = """
-                                                       Need to extract information from today's news that will be of interest to a person based on their description of the news.
-                                                       Person description:
-                                                       {0}
-                                                       
-                                                       Today`s news:
+                                                       From the large text, highlight information that matches my contact's interests: "{0}". Create a short text divided into paragraphs, where each paragraph is a concise description of one relevant aspect from the text. The text should be compact, focusing on key ideas that I can easily mention in a conversation with a contact. Exclude anything that doesn't relate to the interests indicated
+
                                                        {1}
                                                        """;
 }
