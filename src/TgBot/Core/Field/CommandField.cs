@@ -4,10 +4,10 @@
     {
         public const string Start = "start";
         public const string Reload = "reload";
-        public const string AddContact = "addContact";
+        public const string AddContact = "add";
         public const string GetRecommendation = "rec";
-        public const string GetAllContacts = "cont";
-        public const string ChangeContact = "changeContact";
-        public const string DeleteMyContact = "deleteContact";
+        public const string GetAllContacts = "contact";
+        public const string ChangeContact = "change";
+        public const string DeleteMyContact = "delete";
     }
 }

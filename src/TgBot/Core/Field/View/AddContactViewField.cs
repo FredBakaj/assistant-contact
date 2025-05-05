@@ -8,4 +8,5 @@ public abstract class AddContactViewField
     public const string SaveContact = nameof(SaveContact);
     public const string SavedContact = nameof(SavedContact);
     public const string CanceledSaveContact = nameof(CanceledSaveContact);
+    public const string InputTimeSpan = nameof(InputTimeSpan);
 }

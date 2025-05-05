@@ -73,4 +73,33 @@ public class AddContactView : ABotView
         var text = "Saving a contact has been canceled";
         await _botClient.SendMessage(update.GetUserId(), text, replyMarkup: new ReplyKeyboardRemove());
     }
+
+    [BotView(AddContactViewField.InputTimeSpan)]
+    public async Task InputTimeSpan(UpdateBDto update)
+    {
+        var text = "Enter new notification time span";
+        var keyboard = new InlineKeyboardMarkup(new[]
+        {
+            new List<InlineKeyboardButton>()
+            {
+                new InlineKeyboardButton()
+                {
+                    Text = "3 day", CallbackData = $"{ChangeContactField.InputTimeSpanCallback}:3"
+                },
+                new InlineKeyboardButton()
+                {
+                    Text = "1 week", CallbackData = $"{ChangeContactField.InputTimeSpanCallback}:7"
+                },
+                new InlineKeyboardButton()
+                {
+                    Text = "2 week", CallbackData = $"{ChangeContactField.InputTimeSpanCallback}:14"
+                },
+                new InlineKeyboardButton()
+                {
+                    Text = "1 month", CallbackData = $"{ChangeContactField.InputTimeSpanCallback}:28"
+                },
+            }
+        });
+        await _botClient.SendMessage(update.GetUserId(), text, replyMarkup: keyboard);
+    }
 }

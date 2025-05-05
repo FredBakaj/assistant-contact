@@ -12,4 +12,6 @@ public abstract class AddContactField
     public const string SaveContactAction = nameof(SaveContactAction);
     public const string SavedContactKeyboard = "Save contact";
     public const string CanceledSaveContactKeyboard = "Cancel";
+    public const string InputTimeSpanAction = nameof(InputTimeSpanAction);
+    public const string InputTimeSpanCallback = nameof(InputTimeSpanCallback);
 }

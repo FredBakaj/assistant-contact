@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using AssistantContract.Application.UseCase.Contact.Commands.AddContact;
+﻿using AssistantContract.Application.UseCase.Contact.Commands.AddContact;
 using AssistantContract.TgBot.Core.Extension;
 using AssistantContract.TgBot.Core.Field.Controller;
 using AssistantContract.TgBot.Core.Field.View;
@@ -48,6 +47,9 @@ public class AddContactController : IBotController
             SkipInputPhoneKeyboard);
 
         _botStateTreeHandler.AddAction(AddContactField.InputDescriptionAction, InputDescriptionAction);
+        _botStateTreeHandler.AddAction(AddContactField.InputTimeSpanAction, InputTimeSpanAction);
+        _botStateTreeHandler.AddCallback(AddContactField.InputTimeSpanAction, AddContactField.InputTimeSpanCallback,
+            InputTimeSpanCallback);
         _botStateTreeHandler.AddKeyboard(AddContactField.SaveContactAction, AddContactField.SavedContactKeyboard,
             SavedContactKeyboard);
         _botStateTreeHandler.AddKeyboard(AddContactField.SaveContactAction, AddContactField.CanceledSaveContactKeyboard,
@@ -97,6 +99,23 @@ public class AddContactController : IBotController
         {
             AddContactDataDto data = (await _botStateTreeUserHandler.GetDataAsync<AddContactDataDto>(arg))!;
             data.Description = text;
+            await _botViewHandler.SendAsync(AddContactViewField.InputTimeSpan, arg);
+            await _botStateTreeUserHandler.SetDataAndActionAsync(arg, AddContactField.InputTimeSpanAction, data);
+        }
+    }
+
+    private async Task InputTimeSpanAction(UpdateBDto arg)
+    {
+        await _botViewHandler.SendAsync(AddContactViewField.InputTimeSpan, arg);
+    }
+
+    private async Task InputTimeSpanCallback(UpdateBDto arg)
+    {
+        var text = arg.CallbackData;
+        if (!string.IsNullOrEmpty(text))
+        {
+            AddContactDataDto data = (await _botStateTreeUserHandler.GetDataAsync<AddContactDataDto>(arg))!;
+            data.NotificationDayTimeSpan = int.Parse(text);
             await _botViewHandler.SendAsync(AddContactViewField.SaveContact, arg);
             await _botStateTreeUserHandler.SetDataAndActionAsync(arg, AddContactField.SaveContactAction, data);
         }
@@ -107,7 +126,11 @@ public class AddContactController : IBotController
         AddContactDataDto data = (await _botStateTreeUserHandler.GetDataAsync<AddContactDataDto>(arg))!;
         await _sender.Send(new AddContactCommand()
         {
-            UserId = arg.GetUserId(), Name = data.Name!, Phone = data.Phone, Description = data.Description!
+            UserId = arg.GetUserId(),
+            Name = data.Name!,
+            Phone = data.Phone,
+            Description = data.Description!,
+            NotificationDayTimeSpan = data.NotificationDayTimeSpan
         });
         await _botViewHandler.SendAsync(AddContactViewField.SavedContact, arg);
         await _botStateTreeUserHandler.SetStateAndActionAsync(arg, BaseField.BaseState, BaseField.BaseState);

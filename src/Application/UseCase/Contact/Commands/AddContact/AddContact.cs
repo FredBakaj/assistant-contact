@@ -12,6 +12,7 @@ public record AddContactCommand : IRequest
     public string Name { get; set; } = null!;
     public string? Phone { get; set; }
     public string Description { get; set; } = null!;
+    public int NotificationDayTimeSpan { get; set; }
 }
 
 public class AddContactCommandValidator : AbstractValidator<AddContactCommand>
@@ -41,7 +42,7 @@ public class AddContactCommandHandler : IRequestHandler<AddContactCommand>
             var keywords =
                 await _aiManager.QueryToLlmModelAsync(string.Format(GetRecommendationPromptField.PromptDetectKeywords,
                     request.Description));
-            
+
             var maxNumberContact = countContact > 0
                 ? await _context.Contact.Where(x => x.UserId == request.UserId)
                     .MaxAsync(x => x.ContactNumber, cancellationToken: cancellationToken)
@@ -55,7 +56,8 @@ public class AddContactCommandHandler : IRequestHandler<AddContactCommand>
                     Name = request.Name,
                     Phone = request.Phone,
                     Description = request.Description,
-                    KeywordDescription = keywords
+                    KeywordDescription = keywords,
+                    NotificationDayTimeSpan = request.NotificationDayTimeSpan
                 }, cancellationToken);
 
             await _context.SaveChangesAsync(cancellationToken);
