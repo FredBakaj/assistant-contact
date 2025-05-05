@@ -4,6 +4,7 @@ using AssistantContract.TgBot.Core.Field;
 using AssistantContract.TgBot.Core.Model;
 using MediatR;
 using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
 
 namespace AssistantContract.TgBot.Core.Src.Command.Implementation;
 
@@ -31,6 +32,11 @@ public class GetRecommendationCommand : IBotCommand
             {
                 UserId = update.GetUserId(), ContactNumber = contactNumber
             });
-        await _telegramBotClient.SendMessage(update.GetUserId(), recommendation.RecommendationText);
+
+        var recommendationLinks =
+            recommendation.SearchResponse.Items.Select(x => $"<a href=\"{x.Link}\">{x.Title}</a>");
+        var recommendationText = string.Join("\n\n➡️", recommendationLinks);
+        var text = $"Recommended resources for describing your contact:\n\n➡️{recommendationText}";
+        await _telegramBotClient.SendMessage(update.GetUserId(), text, parseMode: ParseMode.Html);
     }
 }

@@ -3,20 +3,19 @@
 public abstract class GetRecommendationPromptField
 {
     public const string PromptDetectKeywords = """
-                                               Need to write keywords to generate news on the description of the person
-
+                                               Generate 20 common search queries based on the description of interests
+                                               
                                                Example:
-                                               A man with a lively mind and a broad outlook. Likes to spend time reading books, from classics to modern research. Interested in finance: follows markets, studies investment strategies and economic trends. Interested in world politics, seeks to understand how global events affect the economy and society. Calm, analytical, always looking to deepen his knowledge and see the interconnections in the world around him.
-                                               result:
-                                               Books; Finance; Investments
-
-                                               Description:
+                                               Interests:
+                                               Likes to watch historical videos on YouTube, currently watching the Fyb channel a lot. Also likes to watch CS 2 videos, watches Evelon stream recordings. Reads self-development books, specifically “The 48 Laws of Strength” and “Don't Eat Alone”.
+                                               
+                                               As a result, you need to output a similar pattern:
+                                               
+                                               Best historical documentaries on YouTube; Summary of 48 Laws of Power by Robert Greene; Key lessons from Don't Eat Alone by Keith Ferrazzi; Top YouTube history channels; How to improve social skills networking books; CS2 strategies and tips for ranked matches; 
+                                               
+                                               ---
+                                               Inerests:
                                                {0}
                                                """;
 
-    public const string PromptGenerateRecommendation = """
-                                                       From the large text, highlight information that matches my contact's interests: "{0}". Create a short text divided into paragraphs, where each paragraph is a concise description of one relevant aspect from the text. The text should be compact, focusing on key ideas that I can easily mention in a conversation with a contact. Exclude anything that doesn't relate to the interests indicated
-
-                                                       {1}
-                                                       """;
 }

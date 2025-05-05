@@ -4,7 +4,7 @@ using AssistantContract.Domain.Entities;
 
 namespace AssistantContract.Application.UseCase.Contact.Queries.GetRecommendation;
 
-public record RecommendationQuery : IRequest<ContactRecomendationModel>
+public record RecommendationQuery : IRequest<ContactRecommendationModel>
 {
     public long UserId { get; set; }
     public int ContactNumber { get; set; }
@@ -17,7 +17,7 @@ public class RecommendationQueryValidator : AbstractValidator<RecommendationQuer
     }
 }
 
-public class RecommendationQueryHandler : IRequestHandler<RecommendationQuery, ContactRecomendationModel>
+public class RecommendationQueryHandler : IRequestHandler<RecommendationQuery, ContactRecommendationModel>
 {
     private readonly IApplicationDbContext _context;
     private readonly IAiManager _aiManager;
@@ -28,7 +28,7 @@ public class RecommendationQueryHandler : IRequestHandler<RecommendationQuery, C
         _aiManager = aiManager;
     }
 
-    public async Task<ContactRecomendationModel> Handle(RecommendationQuery request,
+    public async Task<ContactRecommendationModel> Handle(RecommendationQuery request,
         CancellationToken cancellationToken)
     {
         var contact = await _context.Contact.FirstOrDefaultAsync(x =>
@@ -42,20 +42,14 @@ public class RecommendationQueryHandler : IRequestHandler<RecommendationQuery, C
             var keyword = keywordsList[random.Next(keywordsList.Length)];
             
 
-            var newsTexts = await _aiManager.QueryToNewsApiAsync(keyword);
+            var searchResponse = await _aiManager.QueryToGoogleSearchAsync(keyword);
 
-            var promptNewsText = "\n\nToday's news post " + string.Join("\n\nToday's news post \n", newsTexts);
-
-            var recommendationText =
-                await _aiManager.QueryToLlmModelAsync(
-                    string.Format(GetRecommendationPromptField.PromptGenerateRecommendation, contact!.Description,
-                        promptNewsText));
-
+            
             await _context.RecommendationsUser.AddAsync(new RecommendationsUserEntity() { ContactId = contact.Id },
                 cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return new ContactRecomendationModel() { RecommendationText = recommendationText };
+            return new ContactRecommendationModel() { SearchResponse = searchResponse };
         }
         else
         {
