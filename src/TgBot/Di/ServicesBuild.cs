@@ -43,6 +43,8 @@ namespace AssistantContract.TgBot.Di
                 services.AddHostedService<PollingService>();
             }
 
+            services.AddHostedService<SendNotificationService>();
+
             builder.Services.AddApplicationServices();
             builder.Services.AddInfrastructureServices(builder.Configuration);
 

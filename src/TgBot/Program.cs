@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.AddConfiguration(builder.Configuration);
 builder.Logging.AddAzureWebAppDiagnostics();
-builder.Configuration.AddEnvironmentVariables(prefix: "OratoryObserver_");
+builder.Configuration.AddEnvironmentVariables(prefix: "AssistantContract_");
 ServicesBuild.BuildService(builder);
 
 var app = builder.Build();

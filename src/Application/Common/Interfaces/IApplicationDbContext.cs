@@ -10,6 +10,7 @@ public interface IApplicationDbContext
     public DbSet<ContactEntity> Contact { get; }
     public DbSet<LogEntity> Log { get; }
     public DbSet<RecommendationsUserEntity> RecommendationsUser { get; }
+    public DbSet<UserNotificationEntity> UserNotification { get; }
 
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);

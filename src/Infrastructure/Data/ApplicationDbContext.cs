@@ -14,6 +14,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<ContactEntity> Contact => Set<ContactEntity>();
     public DbSet<LogEntity> Log => Set<LogEntity>();
     public DbSet<RecommendationsUserEntity> RecommendationsUser => Set<RecommendationsUserEntity>();
+    public DbSet<UserNotificationEntity> UserNotification => Set<UserNotificationEntity>();
 
 
     protected override void OnModelCreating(ModelBuilder builder)
