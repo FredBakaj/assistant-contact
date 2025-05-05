@@ -4,7 +4,7 @@ using AssistantContract.TgBot.Di;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+ 
 builder.Logging.AddConfiguration(builder.Configuration);
 builder.Logging.AddAzureWebAppDiagnostics();
 builder.Configuration.AddEnvironmentVariables(prefix: "AssistantContract_");
