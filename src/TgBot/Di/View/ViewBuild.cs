@@ -10,5 +10,6 @@ public class ViewBuild
         services.AddScoped<IBotView, BaseBotView>();
         services.AddScoped<IBotView, StartBotView>();
         services.AddScoped<IBotView, AddContactView>();
+        services.AddScoped<IBotView, ChangeContactView>();
     }
 }

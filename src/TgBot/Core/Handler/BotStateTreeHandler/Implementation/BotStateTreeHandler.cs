@@ -70,6 +70,7 @@ namespace AssistantContract.TgBot.Core.Handler.BotStateTreeHandler.Implementatio
         {
             _actions.Add(action, func);
         }
+
         public void AddCallback(string action, string callback, Func<UpdateBDto, Task> func)
         {
             if (_callbacks.TryGetValue(action, out Dictionary<string, Func<UpdateBDto, Task>>? callbackButtons))

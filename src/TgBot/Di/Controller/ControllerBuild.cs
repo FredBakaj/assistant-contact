@@ -10,7 +10,7 @@ namespace AssistantContract.TgBot.Di.Controller
             services.AddScoped<IBotController, BaseController>();
             services.AddScoped<IBotController, StartController>();
             services.AddScoped<IBotController, AddContactController>();
-
+            services.AddScoped<IBotController, ChangeContactController>();
         }
     }
 }

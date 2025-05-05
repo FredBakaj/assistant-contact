@@ -8,6 +8,7 @@ public class ContactEntity : BaseAuditableEntity<int>
     public string Description { get; set; } = null!;
 
     public string KeywordDescription { get; set; } = null!;
+    public int NotificationDayTimeSpan { get; set; }
 
     public long UserId { get; set; }
     public UserEntity User { get; set; } = null!;
