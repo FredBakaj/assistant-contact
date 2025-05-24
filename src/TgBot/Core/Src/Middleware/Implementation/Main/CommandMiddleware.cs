@@ -1,6 +1,10 @@
 using AssistantContract.TgBot.Core.Factory;
 using AssistantContract.TgBot.Core.Model;
 using AssistantContract.TgBot.Core.Src.Command;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using AssistantContract.TgBot.Core.Extension;
+using Telegram.Bot;
 
 namespace AssistantContract.TgBot.Core.Src.Middleware.Implementation.Main;
 
@@ -11,12 +15,16 @@ public class CommandMiddleware : ABotMiddleware
 {
     private readonly IFactory<IBotCommand> _commandFactory;
     private readonly ILogger<CommandMiddleware> _logger;
+    private readonly IServiceProvider _serviceProvider;
 
-
-    public CommandMiddleware(IFactory<IBotCommand> commandFactory, ILogger<CommandMiddleware> logger)
+    public CommandMiddleware(
+        IFactory<IBotCommand> commandFactory,
+        ILogger<CommandMiddleware> logger,
+        IServiceProvider serviceProvider)
     {
         _commandFactory = commandFactory;
         _logger = logger;
+        _serviceProvider = serviceProvider;
     }
 
     public override async Task Next(UpdateBDto update)
@@ -39,9 +47,28 @@ public class CommandMiddleware : ABotMiddleware
                 await base.Next(update);
             }
         }
-        catch (Exception e)
+        catch (InvalidOperationException ex) when (ex.Message.Contains("sequence contains no matching element",
+                                                       StringComparison.OrdinalIgnoreCase))
         {
-            _logger.LogInformation(e, e.Message);
+            _logger.LogInformation(ex, "Unknown command received");
+            if (update.Message != null)
+            {
+                try
+                {
+                    var botClient = _serviceProvider.GetRequiredService<ITelegramBotClient>();
+                    await botClient.SendMessage(
+                        chatId: update.GetUserId(),
+                        text: "❌ This bot does not have this command. Type /help to see available commands.");
+                }
+                catch (Exception sendEx)
+                {
+                    _logger.LogError(sendEx, "Failed to send unknown command message");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing command");
         }
     }
 }
