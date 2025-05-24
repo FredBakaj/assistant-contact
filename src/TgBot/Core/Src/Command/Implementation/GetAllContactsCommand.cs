@@ -91,10 +91,21 @@ public static class HtmlGenerator
             sb.AppendLine("<tr>");
             foreach (var prop in props)
             {
-                var value = prop.GetValue(item)?.ToString() ?? "";
-                // Truncate long text but keep it readable
-                value = value.Length > 100 ? value.Substring(0, 100) + "..." : value;
-                sb.AppendLine($"<td>{System.Net.WebUtility.HtmlEncode(value)}</td>");
+                var value = prop.GetValue(item);
+                string displayValue;
+                
+                if (prop.Name == "NotificationDayTimeSpan" && value is int days)
+                {
+                    displayValue = days > 0 ? $"{days} day{(days != 1 ? "s" : "")}" : "Off";
+                }
+                else
+                {
+                    displayValue = value?.ToString() ?? "";
+                    // Truncate long text but keep it readable
+                    displayValue = displayValue.Length > 100 ? displayValue.Substring(0, 100) + "..." : displayValue;
+                }
+                
+                sb.AppendLine($"<td>{System.Net.WebUtility.HtmlEncode(displayValue)}</td>");
             }
             sb.AppendLine("</tr>");
         }

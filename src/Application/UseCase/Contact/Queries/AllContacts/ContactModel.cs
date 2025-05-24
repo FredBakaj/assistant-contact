@@ -8,6 +8,7 @@ public class ContactModel
     public string Name { get; set; } = null!;
     public string? PersonalInfo { get; set; }
     public string Description { get; set; } = null!;
+    public int NotificationDayTimeSpan { get; set; }
     
     private class Mapping : Profile
     {
