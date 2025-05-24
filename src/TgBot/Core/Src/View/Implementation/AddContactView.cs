@@ -1,4 +1,4 @@
-﻿using AssistantContract.TgBot.Core.Attribute;
+using AssistantContract.TgBot.Core.Attribute;
 using AssistantContract.TgBot.Core.Extension;
 using AssistantContract.TgBot.Core.Field.Controller;
 using AssistantContract.TgBot.Core.Field.View;
@@ -27,12 +27,17 @@ public class AddContactView : ABotView
     }
 
 
-    [BotView(AddContactViewField.InputPhone)]
-    public async Task InputPhone(UpdateBDto update)
+    [BotView(AddContactViewField.InputPersonalInfo)]
+    public async Task InputPersonalInfo(UpdateBDto update)
     {
-        var text = "Enter the phone number";
+        var text = "🔍 Enter personal info to further identify the contact.\n\n" +
+                 "This field is universal - you can enter:\n" +
+                 "• Phone number\n" +
+                 "• Username\n" +
+                 "• Email\n" +
+                 "• Or any other identifier";
         var keyboard =
-            new ReplyKeyboardMarkup(new KeyboardButton(AddContactField.SkipInputPhoneKeyboard))
+            new ReplyKeyboardMarkup(new KeyboardButton(AddContactField.SkipInputPersonalInfoKeyboard))
             {
                 ResizeKeyboard = true
             };

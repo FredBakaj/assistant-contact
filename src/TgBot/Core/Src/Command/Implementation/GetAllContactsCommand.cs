@@ -1,4 +1,4 @@
-﻿using AssistantContract.Application.UseCase.Contact.Queries.AllContacts;
+using AssistantContract.Application.UseCase.Contact.Queries.AllContacts;
 using AssistantContract.TgBot.Core.Extension;
 using AssistantContract.TgBot.Core.Field;
 using AssistantContract.TgBot.Core.Model;
@@ -37,7 +37,7 @@ public class GetAllContactsCommand : IBotCommand
         await _telegramBotClient.SendDocument(
             chatId: update.GetUserId(),
             document: InputFile.FromStream(stream, "contacts.html"),
-            caption: "Контакты в виде таблицы"
+            caption: "Your contacts in table format"
         );
 
     }
@@ -48,32 +48,54 @@ public static class HtmlGenerator
     public static string GenerateHtmlTable<T>(IEnumerable<T> items)
     {
         var sb = new StringBuilder();
-        var props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        var props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Where(p => p.Name != "KeywordDescription" && p.Name != "UserId" && p.Name != "Id");
 
         sb.AppendLine("<!DOCTYPE html>");
-        sb.AppendLine("<html><head><meta charset='UTF-8'><title>Table</title></head><body>");
-        sb.AppendLine("<table border='1' cellpadding='5' cellspacing='0'>");
+        sb.AppendLine("<html><head>");
+        sb.AppendLine("<meta charset='UTF-8'>");
+        sb.AppendLine("<title>Your Contacts</title>");
+        sb.AppendLine("<style>");
+        sb.AppendLine("body { font-family: Arial, sans-serif; margin: 20px; }");
+        sb.AppendLine("h1 { color: #2c3e50; }");
+        sb.AppendLine("table { border-collapse: collapse; width: 100%; margin-top: 20px; }");
+        sb.AppendLine("th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }");
+        sb.AppendLine("th { background-color: #f2f2f2; font-weight: bold; }");
+        sb.AppendLine("tr:nth-child(even) { background-color: #f9f9f9; }");
+        sb.AppendLine("tr:hover { background-color: #f1f1f1; }");
+        sb.AppendLine("</style>");
+        sb.AppendLine("</head><body>");
+        sb.AppendLine("<h1>Your Contacts</h1>");
+        sb.AppendLine("<table>");
 
-        // Заголовок таблицы
+        // Table header with friendly names
         sb.AppendLine("<tr>");
         foreach (var prop in props)
         {
-            sb.AppendLine($"<th>{prop.Name}</th>");
+            string headerName = prop.Name switch
+            {
+                "ContactNumber" => "#",
+                "Name" => "Name",
+                "PersonalInfo" => "Contact Info",
+                "Description" => "Description",
+                "NotificationDayTimeSpan" => "Reminder (days)",
+                _ => prop.Name
+            };
+            sb.AppendLine($"<th>{headerName}</th>");
         }
-
         sb.AppendLine("</tr>");
 
-        // Строки данных
+        // Table rows
         foreach (var item in items)
         {
             sb.AppendLine("<tr>");
             foreach (var prop in props)
             {
                 var value = prop.GetValue(item)?.ToString() ?? "";
-                value = string.Concat(value.Take(125));
+                // Truncate long text but keep it readable
+                value = value.Length > 100 ? value.Substring(0, 100) + "..." : value;
                 sb.AppendLine($"<td>{System.Net.WebUtility.HtmlEncode(value)}</td>");
             }
-
             sb.AppendLine("</tr>");
         }
 

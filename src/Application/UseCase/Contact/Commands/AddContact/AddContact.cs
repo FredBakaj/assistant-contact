@@ -10,7 +10,7 @@ public record AddContactCommand : IRequest
 {
     public long UserId { get; set; }
     public string Name { get; set; } = null!;
-    public string? Phone { get; set; }
+    public string? PersonalInfo { get; set; }
     public string Description { get; set; } = null!;
     public int NotificationDayTimeSpan { get; set; }
 }
@@ -54,7 +54,7 @@ public class AddContactCommandHandler : IRequestHandler<AddContactCommand>
                     UserId = request.UserId,
                     ContactNumber = maxNumberContact + 1,
                     Name = request.Name,
-                    Phone = request.Phone,
+                    PersonalInfo = request.PersonalInfo,
                     Description = request.Description,
                     KeywordDescription = keywords,
                     NotificationDayTimeSpan = request.NotificationDayTimeSpan

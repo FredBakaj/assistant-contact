@@ -58,5 +58,5 @@ dotnet test
 To learn more about the template go to the [project website](https://github.com/JasonTaylorDev/AssistantContract). Here you can find additional guidance, request new features, report a bug, and discuss the template with other users.
 
 ```bash
-dotnet ef migrations add "" --project src\Infrastructure --startup-project src\Web --output-dir Data\Migrations
+dotnet ef migrations add "" --project src\Infrastructure --startup-project src\TgBot --output-dir Data\Migrations
 ```

@@ -1,4 +1,4 @@
-﻿using AssistantContract.Application.UseCase.Contact.Commands.AddContact;
+using AssistantContract.Application.UseCase.Contact.Commands.AddContact;
 using AssistantContract.TgBot.Core.Extension;
 using AssistantContract.TgBot.Core.Field.Controller;
 using AssistantContract.TgBot.Core.Field.View;
@@ -42,9 +42,9 @@ public class AddContactController : IBotController
     {
         _botStateTreeHandler.AddAction(AddContactField.AddContactAction, AddContactAction);
         _botStateTreeHandler.AddAction(AddContactField.InputNameAction, InputNameAction);
-        _botStateTreeHandler.AddAction(AddContactField.InputPhoneAction, InputPhoneAction);
-        _botStateTreeHandler.AddKeyboard(AddContactField.InputPhoneAction, AddContactField.SkipInputPhoneKeyboard,
-            SkipInputPhoneKeyboard);
+        _botStateTreeHandler.AddAction(AddContactField.InputPersonalInfoAction, InputPersonalInfoAction);
+        _botStateTreeHandler.AddKeyboard(AddContactField.InputPersonalInfoAction, AddContactField.SkipInputPersonalInfoKeyboard,
+            SkipInputPersonalInfoKeyboard);
 
         _botStateTreeHandler.AddAction(AddContactField.InputDescriptionAction, InputDescriptionAction);
         _botStateTreeHandler.AddAction(AddContactField.InputTimeSpanAction, InputTimeSpanAction);
@@ -68,24 +68,24 @@ public class AddContactController : IBotController
         if (!string.IsNullOrEmpty(text))
         {
             AddContactDataDto data = new AddContactDataDto() { Name = text };
-            await _botViewHandler.SendAsync(AddContactViewField.InputPhone, arg);
-            await _botStateTreeUserHandler.SetDataAndActionAsync(arg, AddContactField.InputPhoneAction, data);
+            await _botViewHandler.SendAsync(AddContactViewField.InputPersonalInfo, arg);
+            await _botStateTreeUserHandler.SetDataAndActionAsync(arg, AddContactField.InputPersonalInfoAction, data);
         }
     }
 
-    private async Task InputPhoneAction(UpdateBDto arg)
+    private async Task InputPersonalInfoAction(UpdateBDto arg)
     {
         var text = arg.GetMessage().Text;
         if (!string.IsNullOrEmpty(text))
         {
             AddContactDataDto data = (await _botStateTreeUserHandler.GetDataAsync<AddContactDataDto>(arg))!;
-            data.Phone = text;
+            data.PersonalInfo = text;
             await _botViewHandler.SendAsync(AddContactViewField.InputDescription, arg);
             await _botStateTreeUserHandler.SetDataAndActionAsync(arg, AddContactField.InputDescriptionAction, data);
         }
     }
 
-    private async Task SkipInputPhoneKeyboard(UpdateBDto arg)
+    private async Task SkipInputPersonalInfoKeyboard(UpdateBDto arg)
     {
         await _botViewHandler.SendAsync(AddContactViewField.InputDescription, arg);
         await _botStateTreeUserHandler.SetActionAsync(arg, AddContactField.InputDescriptionAction);
@@ -128,7 +128,7 @@ public class AddContactController : IBotController
         {
             UserId = arg.GetUserId(),
             Name = data.Name!,
-            Phone = data.Phone,
+            PersonalInfo = data.PersonalInfo,
             Description = data.Description!,
             NotificationDayTimeSpan = data.NotificationDayTimeSpan
         });
