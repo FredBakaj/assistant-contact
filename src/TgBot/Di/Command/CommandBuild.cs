@@ -15,5 +15,6 @@ public class CommandBuild
         services.AddScoped<IBotCommand, ChangeContactCommand>();
         services.AddScoped<IBotCommand, DeleteMyContactCommand>();
         services.AddScoped<IBotCommand, HelpCommand>();
+        services.AddScoped<IBotCommand, TutorialCommand>();
     }
 }

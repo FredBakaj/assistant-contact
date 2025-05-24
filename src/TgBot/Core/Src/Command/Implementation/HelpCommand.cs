@@ -1,6 +1,7 @@
 using AssistantContract.TgBot.Core.Extension;
 using AssistantContract.TgBot.Core.Field;
 using AssistantContract.TgBot.Core.Model;
+using Humanizer;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 
@@ -20,18 +21,37 @@ public class HelpCommand : IBotCommand
 
     public async Task Exec(UpdateBDto update)
     {
-        var helpMessage = 
-            "🤖 *Available Commands*:\n\n" +
-            $"• /{CommandField.Start} - Start the bot\n" +
-            $"• /{CommandField.Help} - Show this help message\n" +
-            $"• /{CommandField.AddContact} - Add a new contact\n" +
-            $"• /{CommandField.GetAllContacts} - List all your contacts\n" +
-            $"• /{CommandField.ChangeContact} - Change contact information\n" +
-            $"• /{CommandField.DeleteMyContact} [number] - Delete a contact\n" +
-            $"• /{CommandField.GetRecommendation} [number] - Get recommendations for a contact\n\n" +
-            "Example usage:\n" +
-            $"`/{CommandField.AddContact}` - Add a new contact\n" +
-            $"`/{CommandField.DeleteMyContact} 1` - Delete contact #1";
+        var helpMessage = """
+        🤖 *Available Commands*:
+
+        *Getting Started*
+        • /{0} - Show this help message
+        • /{1} - Learn how to use this bot
+        • /{2} - Start the bot
+
+        *Contact Management*
+        • /{3} - Add a new contact
+        • /{4} - List all your contacts
+        • /{5} - Change contact information
+        • /{6} [number] - Delete a contact
+        • /{7} [number] - Get conversation ideas for a contact
+
+        *Examples*
+        ```
+        /{3} - Add a new contact
+        /{6} 1 - Delete contact #1
+        /{7} 2 - Get ideas for contact #2
+        ```
+        """.FormatWith(
+            CommandField.Help,
+            CommandField.Tutorial,
+            CommandField.Start,
+            CommandField.AddContact,
+            CommandField.GetAllContacts,
+            CommandField.ChangeContact,
+            CommandField.DeleteMyContact,
+            CommandField.GetRecommendation
+        );
 
         await _telegramBotClient.SendMessage(
             chatId: update.GetUserId(),

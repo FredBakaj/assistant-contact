@@ -10,5 +10,6 @@ namespace AssistantContract.TgBot.Core.Field
         public const string ChangeContact = "change";
         public const string DeleteMyContact = "delete";
         public const string Help = "help";
+        public const string Tutorial = "tutorial";
     }
 }
