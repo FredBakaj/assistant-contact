@@ -1,4 +1,4 @@
-﻿using AssistantContract.Application.UseCase.Contact.Commands.ChangeContact;
+using AssistantContract.Application.UseCase.Contact.Commands.ChangeContact;
 using AssistantContract.TgBot.Core.Extension;
 using AssistantContract.TgBot.Core.Field.Controller;
 using AssistantContract.TgBot.Core.Field.View;
@@ -44,6 +44,11 @@ public class ChangeContactController : IBotController
         _botStateTreeHandler.AddAction(ChangeContactField.ChangeContactInputDescriptionAction, InputDescriptionAction);
         _botStateTreeHandler.AddKeyboard(ChangeContactField.ChangeContactInputDescriptionAction,
             ChangeContactField.ChangeContactSkipInputDescriptionKeyboard, SkipInputDescriptionAction);
+            
+        _botStateTreeHandler.AddAction(ChangeContactField.ChangeContactInputPersonalInfoAction, InputPersonalInfoAction);
+        _botStateTreeHandler.AddKeyboard(ChangeContactField.ChangeContactInputPersonalInfoAction,
+            ChangeContactField.ChangeContactSkipInputPersonalInfoKeyboard, SkipInputPersonalInfoAction);
+            
         _botStateTreeHandler.AddAction(ChangeContactField.ChangeContactInputTimeSpanAction, InputTimeSpanAction);
         _botStateTreeHandler.AddCallback(ChangeContactField.ChangeContactInputTimeSpanAction,
             ChangeContactField.InputTimeSpanCallback, InputTimeSpanCallback);
@@ -73,13 +78,33 @@ public class ChangeContactController : IBotController
         {
             ChangeContactDataDto data = (await _botStateTreeUserHandler.GetDataAsync<ChangeContactDataDto>(arg))!;
             data.Description = text;
+            await _botViewHandler.SendAsync(ChangeContactViewField.ChangeContactInputPersonalInfo, arg);
+            await _botStateTreeUserHandler.SetDataAndActionAsync(arg,
+                ChangeContactField.ChangeContactInputPersonalInfoAction, data);
+        }
+    }
+
+    private async Task SkipInputDescriptionAction(UpdateBDto arg)
+    {
+        await _botViewHandler.SendAsync(ChangeContactViewField.ChangeContactInputPersonalInfo, arg);
+        await _botStateTreeUserHandler.SetActionAsync(arg,
+            ChangeContactField.ChangeContactInputPersonalInfoAction);
+    }
+    
+    private async Task InputPersonalInfoAction(UpdateBDto arg)
+    {
+        var text = arg.GetMessage().Text;
+        if (!string.IsNullOrEmpty(text))
+        {
+            ChangeContactDataDto data = (await _botStateTreeUserHandler.GetDataAsync<ChangeContactDataDto>(arg))!;
+            data.PersonalInfo = text;
             await _botViewHandler.SendAsync(ChangeContactViewField.ChangeContactInputTimeSpan, arg);
             await _botStateTreeUserHandler.SetDataAndActionAsync(arg,
                 ChangeContactField.ChangeContactInputTimeSpanAction, data);
         }
     }
-
-    private async Task SkipInputDescriptionAction(UpdateBDto arg)
+    
+    private async Task SkipInputPersonalInfoAction(UpdateBDto arg)
     {
         await _botViewHandler.SendAsync(ChangeContactViewField.ChangeContactInputTimeSpan, arg);
         await _botStateTreeUserHandler.SetActionAsync(arg,
@@ -119,6 +144,7 @@ public class ChangeContactController : IBotController
             UserId = arg.GetUserId(),
             ContactNumber = data.ContactNumber,
             Description = data.Description!,
+            PersonalInfo = data.PersonalInfo,
             NotificationDayTimeSpan = data.NotificationDayTimeSpan
         });
         await _botStateTreeUserHandler.ClearDataAsync(arg);

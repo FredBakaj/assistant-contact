@@ -1,4 +1,4 @@
-﻿using AssistantContract.TgBot.Core.Attribute;
+using AssistantContract.TgBot.Core.Attribute;
 using AssistantContract.TgBot.Core.Extension;
 using AssistantContract.TgBot.Core.Field.Controller;
 using AssistantContract.TgBot.Core.Field.View;
@@ -25,6 +25,16 @@ public class ChangeContactView : ABotView
         var text = "Enter new description";
         var keyboard = new ReplyKeyboardMarkup(
             new[] { new KeyboardButton(ChangeContactField.ChangeContactSkipInputDescriptionKeyboard) }
+        ) { ResizeKeyboard = true };
+        await _botClient.SendMessage(update.GetUserId(), text, replyMarkup: keyboard);
+    }
+    
+    [BotView(ChangeContactViewField.ChangeContactInputPersonalInfo)]
+    public async Task InputPersonalInfo(UpdateBDto update)
+    {
+        var text = "Enter new contact info (phone, email, username, etc.)";
+        var keyboard = new ReplyKeyboardMarkup(
+            new[] { new KeyboardButton(ChangeContactField.ChangeContactSkipInputPersonalInfoKeyboard) }
         ) { ResizeKeyboard = true };
         await _botClient.SendMessage(update.GetUserId(), text, replyMarkup: keyboard);
     }

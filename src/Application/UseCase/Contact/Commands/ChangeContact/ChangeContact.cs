@@ -1,4 +1,4 @@
-﻿using AssistantContract.Application.Common.Interfaces;
+using AssistantContract.Application.Common.Interfaces;
 using AssistantContract.Application.Manager.Ai;
 using AssistantContract.Application.UseCase.Contact.Queries.GetRecommendation;
 
@@ -8,6 +8,7 @@ public record ChangeContactCommand : IRequest
 {
     public long UserId { get; set; }
     public string? Description { get; set; }
+    public string? PersonalInfo { get; set; }
     public int? NotificationDayTimeSpan { get; set; }
     public int ContactNumber { get; set; }
 }
@@ -47,6 +48,11 @@ public class ChangeContactCommandHandler : IRequestHandler<ChangeContactCommand>
         }
 
         contact!.NotificationDayTimeSpan = request.NotificationDayTimeSpan ?? contact.NotificationDayTimeSpan;
+        
+        if (!string.IsNullOrEmpty(request.PersonalInfo))
+        {
+            contact.PersonalInfo = request.PersonalInfo;
+        }
 
         await _context.SaveChangesAsync(cancellationToken);
     }
