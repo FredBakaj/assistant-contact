@@ -1,11 +1,11 @@
-﻿using AssistantContract.Application.Common.Interfaces;
+using AssistantContract.Application.Common.Interfaces;
 using AssistantContract.Domain.Entities;
 
 namespace AssistantContract.Application.UseCase.User.Commands.SendNotification;
 
 public record SendNotificationCommand : IRequest
 {
-    public Func<long, int, string, Task> Action { get; set; } = null!;
+    public Func<long, int, string, string, Task> Action { get; set; } = null!;
 }
 
 public class SendNotificationCommandValidator : AbstractValidator<SendNotificationCommand>
@@ -39,14 +39,15 @@ public class SendNotificationCommandHandler : IRequestHandler<SendNotificationCo
 
             foreach (var contact in contacts)
             {
-                if (notifications.All(x => x.ContactNumber != contact.ContactNumber))
+                if (true)
                 {
                     var days = (DateTime.UtcNow - contact.Created).Days;
 
-                    if (contact.NotificationDayTimeSpan > 0 && days > 0 &&
-                        days % contact.NotificationDayTimeSpan == 0)
+                    // if (contact.NotificationDayTimeSpan > 0 && days > 0 &&
+                    //     days % contact.NotificationDayTimeSpan == 0)
+                    if (true)
                     {
-                        await request.Action.Invoke(user.Id, contact.ContactNumber, contact.Name);
+                        await request.Action.Invoke(user.Id, contact.ContactNumber, contact.Name, contact.PersonalInfo ?? string.Empty);
                         await _context.UserNotification.AddAsync(
                             new UserNotificationEntity() { UserId = user.Id, ContactNumber = contact.ContactNumber },
                             cancellationToken);

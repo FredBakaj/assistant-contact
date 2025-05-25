@@ -1,5 +1,7 @@
-﻿using AssistantContract.Application.UseCase.User.Commands.SendNotification;
+using AssistantContract.Application.UseCase.User.Commands.SendNotification;
 using MediatR;
+using System.Text;
+using AssistantContract.TgBot.Core.Field;
 using Telegram.Bot;
 
 namespace AssistantContract.TgBot.Core.Service.Implementation;
@@ -35,9 +37,26 @@ public class SendNotificationService : BackgroundService
         }
     }
 
-    private async Task SendToTelegram(long userId, int contactNumber, string contactName)
+    private async Task SendToTelegram(long userId, int contactNumber, string contactName, string personalInfo)
     {
-        var text = $"Time to email your contact \nContact number: {contactNumber} \nName: {contactName}";
-        await _telegramBotClient.SendMessage(userId, text);
+        var message = new StringBuilder();
+        message.AppendLine("🔔 *Contact Reminder*\n");
+        
+        // Contact info
+        message.AppendLine($"📛 *Name:* {contactName}");
+
+        if (!string.IsNullOrEmpty(personalInfo))
+        {
+            message.AppendLine($"📱 *Contact Info:* {personalInfo}");
+        }
+        
+        // Quick action
+        message.AppendLine("\n💬 *Quick Action:*");
+        message.AppendLine($"`/{CommandField.GetRecommendation} {contactNumber}`");
+        
+        await _telegramBotClient.SendMessage(
+            chatId: userId,
+            text: message.ToString(),
+            parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown);
     }
 }
