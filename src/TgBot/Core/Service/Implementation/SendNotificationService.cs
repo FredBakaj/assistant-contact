@@ -58,5 +58,6 @@ public class SendNotificationService : BackgroundService
             chatId: userId,
             text: message.ToString(),
             parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown);
+        
     }
 }

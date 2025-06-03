@@ -39,13 +39,12 @@ public class SendNotificationCommandHandler : IRequestHandler<SendNotificationCo
 
             foreach (var contact in contacts)
             {
-                if (true)
+                if (notifications.All(x => x.ContactNumber != contact.ContactNumber))
                 {
                     var days = (DateTime.UtcNow - contact.Created).Days;
 
-                    // if (contact.NotificationDayTimeSpan > 0 && days > 0 &&
-                    //     days % contact.NotificationDayTimeSpan == 0)
-                    if (true)
+                    if (contact.NotificationDayTimeSpan > 0 && days > 0 &&
+                        days % contact.NotificationDayTimeSpan == 0)
                     {
                         await request.Action.Invoke(user.Id, contact.ContactNumber, contact.Name, contact.PersonalInfo ?? string.Empty);
                         await _context.UserNotification.AddAsync(
