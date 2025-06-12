@@ -23,11 +23,16 @@ public class ChangeContactCommand : IBotCommand
 
     public async Task Exec(UpdateBDto update)
     {
-        var splitMessage = update.Message!.Text!.Split(" ");
+        var splitMessage = update.Message!.Text!.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         if (splitMessage.Length < 2)
         {
-            var text = "Enter the number of the contact";
-            await _telegramBotClient.SendMessage(update.GetUserId(), text);
+            var text = "❌ Пожалуйста, укажите номер контакта.\n\n" +
+                       $"<i>Пример:</i> /{CommandField.ChangeContact} 1";
+            await _telegramBotClient.SendMessage(
+                chatId: update.GetUserId(),
+                text: text,
+                parseMode: Telegram.Bot.Types.Enums.ParseMode.Html);
+            return;
         }
         else
         {
