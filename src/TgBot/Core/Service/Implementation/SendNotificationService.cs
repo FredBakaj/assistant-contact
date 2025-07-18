@@ -40,24 +40,24 @@ public class SendNotificationService : BackgroundService
     private async Task SendToTelegram(long userId, int contactNumber, string contactName, string personalInfo)
     {
         var message = new StringBuilder();
-        message.AppendLine("🔔 *Contact Reminder*\n");
+        message.AppendLine("🔔 <b>Contact Reminder</b>\n\n");
         
         // Contact info
-        message.AppendLine($"📛 *Name:* {contactName}");
+        message.AppendLine($"📛 <b>Name:</b> {contactName}");
 
         if (!string.IsNullOrEmpty(personalInfo))
         {
-            message.AppendLine($"📱 *Contact Info:* {personalInfo}");
+            message.AppendLine($"📱 <b>Contact Info:</b> {personalInfo}");
         }
         
         // Quick action
-        message.AppendLine("\n💬 *Quick Action:*");
-        message.AppendLine($"`/{CommandField.GetRecommendation} {contactNumber}`");
+        message.AppendLine("\n\n💬 <b>Quick Action:</b>");
+        message.AppendLine($"<code>/{CommandField.GetRecommendation} {contactNumber}</code>");
         
         await _telegramBotClient.SendMessage(
             chatId: userId,
             text: message.ToString(),
-            parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown);
+            parseMode: Telegram.Bot.Types.Enums.ParseMode.Html);
         
     }
 }
